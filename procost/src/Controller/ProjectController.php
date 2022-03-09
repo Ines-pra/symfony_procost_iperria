@@ -5,8 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+
+use App\Entity\Project;
+use App\Form\ProjectType;
 
 class ProjectController extends AbstractController
 {
@@ -39,13 +42,25 @@ class ProjectController extends AbstractController
     }
 
     /** 
-     * @Route("/project_form",name="form_project",methods={"GET"})
+     * @Route("/project_form",name="form_project",methods={"GET","POST"})
      */
 
-    public function add_project() : Response
+    public function add_project(Request $request) : Response
     {
+        $project = new Project;
+        $form = $this->createForm(ProjectType::class, $project);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $this->addFlash('success', 'Votre ajout a été pris en compte');
+            // return $this->redirectToRoute('/project');
+        }
+
         return $this->render('forms/formProject.html.twig',[
             'title' => "Projets",
+            'form' => $form->createView()
         ]);
     }
 

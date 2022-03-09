@@ -1,25 +1,84 @@
  {% extends 'layout.html.twig' %}
  {% block content %}
-        <main class="app-content">
-            <div class="app-title">
-                <div>
-                    <h1><i class="fa fa-users"></i>&nbsp;Edition d'un employé</h1>
-                </div>
-                <ul class="app-breadcrumb breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="#"><i class="fa fa-home fa-lg"></i></a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="#">{{ title }}</a>
-                    </li>
-                    <li class="breadcrumb-item">Edition d'un employé</li>
-                </ul>
-            </div>
-            <div class="tile">
-                    <div class="alert alert-dismissible alert-success my-4">
-                        <button class="close" type="button" data-dismiss="alert">×</button><strong>Well done!</strong> Message flash.
-                    </div>
-                <form class="form-horizontal">
+ <main class="app-content">
+     <div class="app-title">
+         <div>
+             <h1><i class="fa fa-users"></i>&nbsp;Edition d'un employé</h1>
+         </div>
+         <ul class="app-breadcrumb breadcrumb">
+             <li class="breadcrumb-item">
+                 <a href="#"><i class="fa fa-home fa-lg"></i></a>
+             </li>
+             <li class="breadcrumb-item">
+                 <a href="#">{{ title }}</a>
+             </li>
+             <li class="breadcrumb-item">Edition d'un employé</li>
+         </ul>
+     </div>
+     <div class="tile">
+
+         {% for message in app.flashes('success') %}
+         <div class="alert alert-dismissible alert-success my-4">
+             <button class="close" type="button" data-dismiss="alert">×</button> {{ message }}
+         </div>
+         {% endfor %}
+         <div class="form-horizontal">
+             {{ form_start(form) }}
+             <section>
+                 <h3>Informations générales</h3>
+                 <div class="row mt-4">
+                     <div class="offset-md-4 col-md-8">
+
+                         <div class="form-group row">
+                             {{ form_errors(form.firstName) }}
+                             {{ form_label(form.firstName) }}
+                             {{ form_widget(form.firstName, {'attr': {'class': 'form-control', 'placeholder': form.firstName.vars.label} }) }}
+                         </div>
+                         <div class="form-group row">
+                             {{ form_errors(form.lastName) }}
+                             {{ form_label(form.lastName) }}
+                             {{ form_widget(form.lastName, {'attr': {'class': 'form-control', 'placeholder': form.lastName.vars.label} }) }}
+                         </div>
+                         <div class="form-group row">
+                             {{ form_errors(form.email) }}
+                             {{ form_label(form.email) }}
+                             {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': form.email.vars.label} }) }}
+                         </div>
+                     </div>
+                 </div>
+             </section>
+             <hr />
+             <section>
+                 <h3>Production</h3>
+                 <div class="row mt-4">
+                     <div class="offset-md-4 col-md-8">
+                         <div class="form-group row">
+                             {{ form_errors(form.job) }}
+                             {{ form_label(form.job) }}
+                             {{ form_widget(form.job, {'attr': {'class': 'form-control', 'placeholder': form.job.vars.label} }) }}
+                         </div>
+                         <div class="form-group row">
+                             {{ form_errors(form.dayCost) }}
+                             {{ form_label(form.dayCost) }}
+                             {{ form_widget(form.dayCost, {'attr': {'class': 'form-control', 'placeholder': form.dayCost.vars.label} }) }}
+                         </div>
+                         <div class="form-group row">
+                             {{ form_errors(form.createdAt) }}
+                             {{ form_label(form.createdAt) }}
+                             {{ form_widget(form.createdAt, {'attr': {'class': 'form-control', 'placeholder': form.createdAt.vars.label} }) }}
+                         </div>
+                         <div class="row">
+                             <div class="offset-md-6 col-md-6">
+                                 <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>Enregistrer</a>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+             {{ form_end(form) }}
+         </div>
+
+         {# <form class="form-horizontal">
                     <section>
                         <h3>Informations générales</h3>
                         <div class="row mt-4">
@@ -86,8 +145,9 @@
                             <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>Enregistrer</a>
                         </div>
                     </div>
-                </form>
-            </div>
-        </main>
+                </form> #}
 
-      {% endblock %}
+     </div>
+ </main>
+
+ {% endblock %}

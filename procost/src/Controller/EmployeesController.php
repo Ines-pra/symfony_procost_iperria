@@ -5,8 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
-
 use Symfony\Component\Routing\Annotation\Route;
+
+use App\Entity\Employees;
+use App\Form\EmployeesType;
+use Symfony\Component\HttpFoundation\Request;
 
 class EmployeesController extends AbstractController
 {
@@ -40,13 +43,26 @@ class EmployeesController extends AbstractController
     }
 
     /** 
-     * @Route("/employees_form",name="form_employees",methods={"GET"})
+     * @Route("/employees_form",name="form_employees",methods={"GET","POST"})
      */
 
-    public function add_employees() : Response
+    public function add_employees(Request $request) : Response
     {
+
+        $employees = new Employees;
+        $form = $this->createForm(EmployeesType::class, $employees);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $this->addFlash('success', 'Votre ajout a été pris en compte');
+            // return $this->redirectToRoute('/employees');
+        }
+
         return $this->render('forms/formEmployees.html.twig',[
             'title' => "Employés",
+            'form' => $form->createView()
         ]);
     }
    
