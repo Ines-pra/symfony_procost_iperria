@@ -4,20 +4,54 @@ namespace App\Entity;
 
 use DateTime;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\EmployeesRepository")
+ * @ORM\Table(name="sto_employees")
+ */
 class Employees 
 {   
+
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
+    /**
+     * @ORM\Column(type="string",length="255")
+     */
     private $firstname;
 
+    /**
+     * @ORM\Column(type="string",length="255")
+     */
     private $lastname;
 
+    /**
+     * @ORM\Column(type="string",length="255")
+     */
     private $email;
 
+    // /**
+    //  * @ORM\Column(type="string",length="255")
+    //  */
+    /**
+     * @ORM\ManyToOne(targetEntity=Job::class)
+     * @ORM\JoinColumn(nullable=false, name="sto_job_id")
+     */
     private $job;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $dayCost;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $created_at;
 
     public function __construct()
@@ -66,14 +100,25 @@ class Employees
         return $this->email = $email;
     }
 
-    public function getJob()
+    // public function getJob()
+    // {
+    //     return $this->job;
+    // }
+
+    // public function setJob(string $job)
+    // {
+    //     return $this->job = $job;
+    // }
+
+    public function getJob() : ?Job
     {
         return $this->job;
     }
 
-    public function setJob(string $job)
+    public function setJob(?Job $job): self
     {
-        return $this->job = $job;
+        $this->job = $job;
+        return $this;
     }
 
     public function getDayCost()

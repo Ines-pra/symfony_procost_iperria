@@ -9,13 +9,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Employees;
 use App\Form\EmployeesType;
+use App\Repository\EmployeesRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class EmployeesController extends AbstractController
 {
 
     public function __construct(
-        private EntityManagerInterface $em)
+        private EntityManagerInterface $em,
+        private EmployeesRepository $employeesRepository)
     {}
 
     
@@ -25,9 +27,11 @@ class EmployeesController extends AbstractController
 
     public function employees() : Response
     {
-        return $this->render('template/list.html.twig',[
+        $employees = $this->employeesRepository->findAll();
 
+        return $this->render('template/list.html.twig',[
             'title' => "Employés",
+            'employees' => $employees
         ]);
     }
 
@@ -37,6 +41,7 @@ class EmployeesController extends AbstractController
 
     public function details_employees() : Response
     {
+
         return $this->render('details/detailEmployees.html.twig',[
             'title' => "Employés",
         ]);

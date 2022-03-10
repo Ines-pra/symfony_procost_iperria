@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+  {% block stylesheets %}
+        {{parent()}}
+    <link rel="stylesheet" href="{{asset("CSS/heroic-features.css")}}">
+    {% endblock %}
+    
 {% block body %}
     <!-- Navbar -->
         <header class="app-header"><a class="app-header__logo" href="#">Procost</a>

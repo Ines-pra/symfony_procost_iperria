@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Job;
 use App\Form\JobType;
+use App\Repository\JobRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +15,8 @@ class JobController extends AbstractController
 {
 
     public function __construct(
-        private EntityManagerInterface $em)
+        private EntityManagerInterface $em,
+        private JobRepository $jobRepository)
     {}
 
     /** 
@@ -23,27 +25,34 @@ class JobController extends AbstractController
 
     public function job() : Response
     {
-        return $this->render('template/list.html.twig',[
+        $jobs = $this->jobRepository->findAll();
 
+        return $this->render('template/list.html.twig',[
             'title' => "Métiers",
+            'jobs' => $jobs
         ]);
     }
 
     /** 
-     * @Route("/job_form",name="form_job",methods={"GET","POST"})
+     * @Route("/job_form/{id}",name="form_job",methods={"GET","POST"}, requirements={"id"="\d+"})
      */
 
-    public function add_employees(Request $request) : Response
+    public function add_employees(Request $request, int $id) : Response
     {
-
         $job = new Job;
         $form = $this->createForm(JobType::class, $job);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid())
-        {
-            $this->addFlash('success', 'Votre ajout a été pris en compte');
+        {$data = $form->getData();
+            if ($id == 0){
+            $this->addFlash('success', 'Votre ajout a été pris en compte');}
+            else {
+                $job1 = $this->jobRepository->find($id);
+                $job1->setName($_POST['job']['name']);
+                $this->em->flush();
+                $this->addFlash('success', 'Votre modification a été prise en compte');}
             // return $this->redirectToRoute('/job');
         }
 
