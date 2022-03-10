@@ -36,14 +36,15 @@ class EmployeesController extends AbstractController
     }
 
     /** 
-     * @Route("/employees_details",name="details_employees",methods={"GET"})
+     * @Route("/employees_details/{id}",name="details_employees",methods={"GET"})
      */
 
-    public function details_employees() : Response
+    public function details_employees(int $id) : Response
     {
-
+        $employee = $this->employeesRepository->findOneBySomeField($id);
         return $this->render('details/detailEmployees.html.twig',[
             'title' => "Employés",
+            'employee' => $employee
         ]);
     }
 

@@ -3,12 +3,37 @@
 namespace App\DataFixtures;
 
 use App\Entity\Employees;
+use App\Entity\Project;
 use App\Entity\Job;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+
+    private const DATA_PROJECT = [
+        [
+            'name' => 'Project 1',
+            'description' => 'Description 1'
+        ],
+        [
+            'name' => 'Project 2',
+            'description' => 'Description 2'
+        ],
+        [
+            'name' => 'Project 3',
+            'description' => 'Description 3'
+        ],
+        [
+            'name' => 'Project 4',
+            'description' => 'Description 4'
+        ],
+        [
+            'name' => 'Project 5',
+            'description' => 'Description 5'
+        ],
+    ];
+
     private const DATA_EMPLOYEES = [
         [
             'name' => 'User1',
@@ -56,6 +81,7 @@ class AppFixtures extends Fixture
 
         $this->loadJob();
         $this->loadEmployees();
+        $this->loadProject();
         // $product = new Product();
         // $manager->persist($product);
 
@@ -95,6 +121,20 @@ class AppFixtures extends Fixture
             $employees->setCreatedAt($date);
             
             $this->manager->persist($employees);
+        }
+    }
+
+    private function loadProject():void
+    {
+        for($i=0; $i < count(self::DATA_PROJECT); $i++)
+        {
+            $project = new Project();
+            $project->setName(self::DATA_PROJECT[$i]['name']);
+            $project->setDescription(self::DATA_PROJECT[$i]['description']);
+            $project->setSalesPrice(random_int(1500,5000));
+            $project->setDeliverDate(NULL);
+            
+            $this->manager->persist($project);
         }
     }
 

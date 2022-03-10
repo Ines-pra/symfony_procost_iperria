@@ -22,31 +22,31 @@
                         <tbody>
                             <tr>
                                 <th>Prénom</td>
-                                <td>Jack</td>
+                                <td>{{ employee.firstname }}</td>
                             </tr>
                             <tr>
                                 <th>Nom</td>
-                                <td>FROST</td>
+                                <td>{{ employee.lastname }}</td>
                             </tr>
                             <tr>
                                 <th>Email</td>
-                                <td>jfrost@procost.com</td>
+                                <td>{{ employee.email }}</td>
                             </tr>
                             <tr>
                                 <th>Métier</td>
-                                <td>Web developer</td>
+                                <td>{{ employee.job.name }}</td>
                             </tr>
                             <tr>
                                 <th>Coût journalier</td>
-                                <td>500 €</td>
+                                <td>{{ employee.dayCost }} €</td>
                             </tr>
                             <tr>
                                 <th>Date d'embauche</td>
-                                <td>1 mai 2018</td>
+                                <td>{{ employee.createdAt|date("m/d/Y") }}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <a href="form.html" class="btn btn-info">
+                    <a href="/employees_form" class="btn btn-info">
                         <i class="fa fa-pencil"></i>Modifier
                     </a>
                 </div>

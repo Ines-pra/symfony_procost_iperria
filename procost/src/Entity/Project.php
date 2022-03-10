@@ -3,20 +3,45 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\ProjectRepository")
+ * @ORM\Table(name="sto_project")
+ */
 class Project 
 {   
 
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
+    /**
+     * @ORM\Column(type="string",length="255")
+     */
     private $name;
 
+    /**
+     * @ORM\Column(type="string",length="255")
+     */
     private $description;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $sales_price;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $created_at;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
     private $deliver_date;
 
     public function __construct()
@@ -29,7 +54,7 @@ class Project
         return $this->id;
     }
 
-    public function setId(string $id)
+    public function setId(int $id)
     {
         return $this->id = $id;
     }
@@ -75,12 +100,12 @@ class Project
         return $this;
     }
 
-    public function getDeliverDate(): ?\DateTime
+    public function getDeliverDate()
     {
         return $this->deliver_date;
     }
 
-    public function setDeliverDate(DateTime $deliver_date)
+    public function setDeliverDate(?DateTime $deliver_date)
     {
         return $this->deliver_date = $deliver_date;
     }

@@ -10,12 +10,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Project;
 use App\Form\ProjectType;
+use App\Repository\ProjectRepository;
 
 class ProjectController extends AbstractController
 {
 
     public function __construct(
-        private EntityManagerInterface $em)
+        private EntityManagerInterface $em,
+        private ProjectRepository $projectRepository)
     {}
 
     /** 
@@ -24,9 +26,12 @@ class ProjectController extends AbstractController
 
     public function project() : Response
     {
-        return $this->render('template/list.html.twig',[
+        
+        $projects = $this->projectRepository->findAll();
 
+        return $this->render('template/list.html.twig',[
             'title' => "Projets",
+            'projects' => $projects
         ]);
     }
 
