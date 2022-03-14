@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\TimeProject;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EmployeesRepository")
@@ -47,6 +49,11 @@ class Employees
      * @ORM\Column(type="integer")
      */
     private $dayCost;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TimeProject", mappedBy="sto_employee_id")
+     */
+    private $timeProjects;
 
     /**
      * @ORM\Column(type="datetime")
@@ -140,4 +147,17 @@ class Employees
         return $this->created_at = $created_at;
     }
 
+    public function getTimeProjects(): Collection
+    {
+        return $this->timeProjects;
+    }
+
+    public function addTimeProject(TimeProject $timeProject): self
+    {
+        if (!$this->timeProjects->contains($timeProject)) {
+            $this->timeProjects[] = $timeProject;
+            $timeProject->setEmployee($this);
+        }
+        return $this;
+    }
 }

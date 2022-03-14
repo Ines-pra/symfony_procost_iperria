@@ -8,9 +8,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Employees;
+use App\Entity\TimeProject;
 use App\Form\EmployeesType;
+use App\Form\TimeProjectType;
 use App\Repository\EmployeesRepository;
 use App\Repository\JobRepository;
+use App\Repository\ProjectRepository;
+use App\Repository\TimeProjectRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,7 +24,9 @@ class EmployeesController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private EmployeesRepository $employeesRepository,
-        private JobRepository $jobRepository)
+        private JobRepository $jobRepository,
+        private ProjectRepository $projectRepository,
+        private TimeProjectRepository $timeProjectRepository)
     {}
 
     
@@ -39,15 +45,37 @@ class EmployeesController extends AbstractController
     }
 
     /** 
-     * @Route("/employees_details/{id}",name="details_employees",methods={"GET"})
+     * @Route("/employees_details/{id}",name="details_employees",methods={"GET","POST"})
      */
 
-    public function details_employees(int $id) : Response
+    public function details_employees(Request $request, int $id) : Response
     {
         $employee = $this->employeesRepository->findOneBySomeField($id);
+
+        $employees = new TimeProject;
+        $form = $this->createForm(TimeProjectType::class, $employees);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            print_r($_POST);
+            $timeProject = new TimeProject();
+            $timeProject->setProject($this->projectRepository->find($_POST['time_project']['project']));
+            $timeProject->setEmployee($employee);
+            $timeProject->setDay($_POST['time_project']['day']);
+            $this->em->persist($timeProject);
+            $this->em->flush();
+        }
+
+        
+        $timeProjects = $this->timeProjectRepository->findByEmployee($id);
+
         return $this->render('details/detailEmployees.html.twig',[
             'title' => "Employés",
-            'employee' => $employee
+            'employee' => $employee,
+            'form' => $form->createView(),
+            'timeProjects' => $timeProjects
         ]);
     }
 

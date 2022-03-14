@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\TimeProject;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProjectRepository")
@@ -43,6 +45,11 @@ class Project
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $deliver_date;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TimeProject", mappedBy="sto_project_id")
+     */
+    private $time_projects;
 
     public function __construct()
     {
@@ -108,6 +115,20 @@ class Project
     public function setDeliverDate(?DateTime $deliver_date)
     {
         return $this->deliver_date = $deliver_date;
+    }
+
+    public function getTimeProjects(): Collection
+    {
+        return $this->time_projects;
+    }
+
+    public function addTimeProject(TimeProject $time_project): self
+    {
+        if (!$this->time_projects->contains($time_project)) {
+            $this->time_projects[] = $time_project;
+            $time_project->setProject($this);
+        }
+        return $this;
     }
 
 }
