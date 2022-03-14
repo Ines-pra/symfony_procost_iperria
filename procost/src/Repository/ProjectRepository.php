@@ -19,5 +19,14 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    
+    public function findByDeliverDate() : Array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.deliverDate = NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
 

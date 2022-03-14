@@ -45,9 +45,13 @@ class JobController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid())
-        {$data = $form->getData();
+        {
             if ($id == 0){
-            $this->addFlash('success', 'Votre ajout a été pris en compte');}
+                $job1 = new Job();
+                $job1->setName($_POST['job']['name']);
+                $this->em->persist($job1);
+                $this->em->flush();
+                $this->addFlash('success', 'Votre ajout a été pris en compte');}
             else {
                 $job1 = $this->jobRepository->find($id);
                 $job1->setName($_POST['job']['name']);

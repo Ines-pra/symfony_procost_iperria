@@ -26,7 +26,6 @@ class ProjectController extends AbstractController
 
     public function project() : Response
     {
-        
         $projects = $this->projectRepository->findAll();
 
         return $this->render('template/list.html.twig',[
@@ -36,21 +35,24 @@ class ProjectController extends AbstractController
     }
 
     /** 
-     * @Route("/project_details",name="details_project",methods={"GET"})
+     * @Route("/project_details/{id}",name="details_project",methods={"GET"})
      */
 
-    public function details_project() : Response
+    public function details_project(int $id) : Response
     {
+        $project = $this->projectRepository->find($id);
+
         return $this->render('details/detailProject.html.twig',[
             'title' => "Projets",
+            'project' => $project
         ]);
     }
 
     /** 
-     * @Route("/project_form",name="form_project",methods={"GET","POST"})
+     * @Route("/project_form/{id}/{action}",name="form_project",methods={"GET","POST"})
      */
 
-    public function add_project(Request $request) : Response
+    public function add_project(Request $request, int $id, string $action) : Response
     {
         $project = new Project;
         $form = $this->createForm(ProjectType::class, $project);
@@ -59,8 +61,22 @@ class ProjectController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            $this->addFlash('success', 'Votre ajout a été pris en compte');
-            // return $this->redirectToRoute('/project');
+            if (($id == 0)&&($action == 'add')){
+                $project1 = new Project();
+                $project1->setName($_POST['project']['name']);
+                $project1->setDescription($_POST['project']['description']);
+                $project1->setSalesPrice($_POST['project']['salesPrice']);
+                $this->em->persist($project1);
+                $this->em->flush();
+                $this->addFlash('success', 'Votre ajout a été pris en compte');}
+            else {
+                $project1 = $this->projectRepository->find($id);
+                $project1->setName($_POST['project']['name']);
+                $project1->setDescription($_POST['project']['description']);
+                $project1->setSalesPrice($_POST['project']['salesPrice']);
+                $this->em->flush();
+                $this->addFlash('success', 'Votre modification a été prise en compte');}
+            // return $this->redirectToRoute('/job');
         }
 
         return $this->render('forms/formProject.html.twig',[
