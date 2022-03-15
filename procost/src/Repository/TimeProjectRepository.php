@@ -30,5 +30,26 @@ class TimeProjectRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findTotalEmployeeByProject(int $idProject):array{
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.project = :idProject')
+            ->setParameter('idProject', $idProject)
+            ->groupBy('p.employee')
+            ->getQuery()
+            ->getResult();    
+        ;
+    }
+
+    public function findAllProjectById(int $idProject):array{
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.project = :idProject')
+            ->setParameter('idProject', $idProject)
+            ->getQuery()
+            ->getResult();    
+        ;
+    }
+
 }
 

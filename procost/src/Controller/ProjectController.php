@@ -11,13 +11,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use App\Repository\TimeProjectRepository;
 
 class ProjectController extends AbstractController
 {
 
     public function __construct(
         private EntityManagerInterface $em,
-        private ProjectRepository $projectRepository)
+        private ProjectRepository $projectRepository,
+        private TimeProjectRepository $timeProjectRepository)
     {}
 
     /** 
@@ -41,10 +43,22 @@ class ProjectController extends AbstractController
     public function details_project(int $id) : Response
     {
         $project = $this->projectRepository->find($id);
+        $totalEmployee = $this->timeProjectRepository->findTotalEmployeeByProject($id);
+        $employee = $this->timeProjectRepository->findAllProjectById($id);
+        $cout = 0;
+        for ($i=0; $i<count($employee); $i++)
+        {
+            $cout += ($employee[$i]->getDay()*$employee[$i]->getEmployee()->getDayCost());
+        }
+        
 
         return $this->render('details/detailProject.html.twig',[
             'title' => "Projets",
-            'project' => $project
+            'project' => $project,
+            'totalEmployee' => count($totalEmployee),
+            'cout' => $cout,
+            'employees' => $employee
+            
         ]);
     }
 
