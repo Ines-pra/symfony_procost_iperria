@@ -10,8 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Project;
 use App\Form\ProjectType;
+use App\Form\ValidProjectType;
 use App\Repository\ProjectRepository;
 use App\Repository\TimeProjectRepository;
+use DateTime;
 
 class ProjectController extends AbstractController
 {
@@ -23,16 +25,30 @@ class ProjectController extends AbstractController
     {}
 
     /** 
-     * @Route("/project",name="main_project",methods={"GET"})
+     * @Route("/project",name="main_project",methods={"GET","POST"})
      */
 
-    public function project() : Response
+    public function project(Request $request) : Response
     {
         $projects = $this->projectRepository->findAll();
 
+        $project = new Project;
+        $form = $this->createForm(ValidProjectType::class, $project);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $id = $_POST['btnValid'];
+            $project1 = $this->projectRepository->find($id);
+            $project1->setDeliverDate(new DateTime(date('d-m-y h:i:s')));
+            $this->em->flush();
+        }
+
         return $this->render('template/list.html.twig',[
             'title' => "Projets",
-            'projects' => $projects
+            'projects' => $projects,
+            
+            'form' => $form->createView()
         ]);
     }
 
@@ -99,7 +115,5 @@ class ProjectController extends AbstractController
         ]);
     }
 
-
-   
 
 }
