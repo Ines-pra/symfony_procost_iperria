@@ -31,6 +31,9 @@ class MainController extends AbstractController
     public function main() : Response
     {
         $projects = $this->projectRepository->findAll();
+        $employees = $this->employeesRepository->findAll();
+
+        //projets délivrés et en cours
         $projectsFinish=0;
         $projectsNoFinish=0;
         
@@ -41,8 +44,7 @@ class MainController extends AbstractController
             else $projectsFinish++;
         }
 
-        $employees = $this->employeesRepository->findAll();
-        
+        //temps de production
         $timeProject = $this->timeProjectRepository->findAll();
         $totalDay = 0;
         for ($i=0 ; $i<count($timeProject) ; $i++)
@@ -50,28 +52,47 @@ class MainController extends AbstractController
             $totalDay += $timeProject[$i]->getDay();
         }
 
+        //10 derniers temps de production recencés
         $lastTenTimeProject = $this->timeProjectRepository->lastTenTimeProject();
 
-        // $lastProjects = $this->projectRepository->lastProject();
-
-        // // $lastProjects = $this->timeProjectRepository->lastTimeProject();
-
-        // for($i = 0 ; $i<count($lastProjects) ; $i++)
-        // {
-        //     $last = $this->timeProjectRepository->findAllProjectById($lastProjects[$i]->getId());
-        // }
-
-
+        //top employé
         $employeePay = [];
-        foreach ($timeProject as $timeP  )
+        $totalCostProject = [];
+        foreach ($timeProject as $timeP)
         {
             if (empty($employeePay[$timeP->getEmployee()->getId()]))
             $employeePay[$timeP->getEmployee()->getId()] = $timeP->getDay()*$timeP->getEmployee()->getDayCost();
             else $employeePay[$timeP->getEmployee()->getId()] += $timeP->getDay()*$timeP->getEmployee()->getDayCost();
+        
+            if (empty($totalCostProject[$timeP->getProject()->getId()]))
+            $totalCostProject[$timeP->getProject()->getId()] = $timeP->getDay()*$timeP->getEmployee()->getDayCost();
+            else $totalCostProject[$timeP->getProject()->getId()] += $timeP->getDay()*$timeP->getEmployee()->getDayCost();
         }
 
         $maxEmployeePay = max($employeePay);
         $topEmployee = $this->employeesRepository->find(array_search($maxEmployeePay,$employeePay));
+
+
+        //les 5 derniers projets + utilisation du tableau de tous les salaires
+        $lastProjects = $this->projectRepository->lastProject();
+        foreach ($projects as $project)
+        {
+            {
+                print_r('Projet '.$project->getId().' non recencés');
+                $totalCostProject[$project->getId()] = "Aucune dépense recencée";
+            }
+        }
+
+
+        //rentabilité des projets 
+        $totalNoRateProject = 0;
+        foreach ($totalCostProject as $totalCP)
+        {
+            if (($totalCP > $this->projectRepository->find(array_search($totalCP,$totalCostProject))->getSalesPrice())&&
+            (!empty($this->projectRepository->find(array_search($totalCP,$totalCostProject))->getDeliverDate()))) $totalNoRateProject++ ;            
+        }
+
+        //taux de livraison : utilisation de la liste de tous les projets et de la liste de tous les projets finis
 
         return $this->render('template/index.html.twig',[
             'title' => "Homepage",
@@ -81,9 +102,11 @@ class MainController extends AbstractController
             'totalEmployee' => count($employees),
             'totalDay' => $totalDay,
             'lastTenTimeProject' => $lastTenTimeProject,
-            // 'lastProjects' => $last
+            'lastProjects' => $lastProjects,
             'maxEmployeePay' => $maxEmployeePay,
-            'topEmployee' => $topEmployee
+            'topEmployee' => $topEmployee,
+            'totalNoRateProject' => $totalNoRateProject,
+            'totalCostProject' => $totalCostProject,
         ]);
     }
 

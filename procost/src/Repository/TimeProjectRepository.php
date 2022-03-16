@@ -64,26 +64,17 @@ class TimeProjectRepository extends ServiceEntityRepository
             ->getResult();  
     }
 
-    // public function lastTimeProject() : Array
-    // {
-    //     return $this
-    //         ->createQueryBuilder('p')
-    //         ->groupBy('p.project')
-    //         ->setMaxResults(5)
-    //         ->getQuery()
-    //         ->getResult();
-    // }
-
-    public function findEmployee(int $idEmployee): array
+    public function lastTimeProject() : Array
     {
         return $this
             ->createQueryBuilder('p')
-            ->where('p.employee = :idEmployee')
-            ->setParameter('idEmployee', $idEmployee)
+            ->groupBy('p.project')
+            ->setMaxResults(5)
             ->getQuery()
-            ->getResult();    
-        ;
+            ->getResult();
     }
+
+
 
 }
 
