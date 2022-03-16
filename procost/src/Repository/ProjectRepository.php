@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Expr\Cast\Array_;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,13 +21,25 @@ class ProjectRepository extends ServiceEntityRepository
     }
 
     
-    public function findByDeliverDate() : Array
+    // public function findByDeliverDate() : Array
+    // {
+    //     return $this
+    //         ->createQueryBuilder('p')
+    //         ->where('p.deliverDate = NULL')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function lastProject() : Array
     {
         return $this
-            ->createQueryBuilder('p')
-            ->where('p.deliverDate = NULL')
-            ->getQuery()
-            ->getResult();
+                ->createQueryBuilder('p')
+                ->orderBy('p.created_at', 'DESC')
+                ->setMaxResults(5)
+                ->getQuery()
+                ->getResult();
     }
+
+
 }
 

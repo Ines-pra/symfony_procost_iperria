@@ -20,7 +20,8 @@ class TimeProjectRepository extends ServiceEntityRepository
     }
 
 
-    public function findByEmployee(int $idEmployee):array{
+    public function findByEmployee(int $idEmployee):array
+    {
         return $this
             ->createQueryBuilder('p')
             ->where('p.employee = :idEmployee')
@@ -30,7 +31,8 @@ class TimeProjectRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findTotalEmployeeByProject(int $idProject):array{
+    public function findTotalEmployeeByProject(int $idProject):array
+    {
         return $this
             ->createQueryBuilder('p')
             ->where('p.project = :idProject')
@@ -41,11 +43,43 @@ class TimeProjectRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllProjectById(int $idProject):array{
+    public function findAllProjectById(int $idProject):array
+    {
         return $this
             ->createQueryBuilder('p')
             ->where('p.project = :idProject')
             ->setParameter('idProject', $idProject)
+            ->getQuery()
+            ->getResult();    
+        ;
+    }
+
+    public function lastTenTimeProject():array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->orderBy('p.created_at', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();  
+    }
+
+    // public function lastTimeProject() : Array
+    // {
+    //     return $this
+    //         ->createQueryBuilder('p')
+    //         ->groupBy('p.project')
+    //         ->setMaxResults(5)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function findEmployee(int $idEmployee): array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.employee = :idEmployee')
+            ->setParameter('idEmployee', $idEmployee)
             ->getQuery()
             ->getResult();    
         ;
