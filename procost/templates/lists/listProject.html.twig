@@ -11,8 +11,8 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-        {% for project in projects %}
+        <tbody> 
+        {% for project in projects %}{{ form_start(form) }}
             <tr>
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
@@ -27,9 +27,17 @@
                     <a href="project_form/{{ project.id }}/update" class="btn btn-info btn-sm">
                         <i class="fa fa-pencil mr-0"></i>
                     </a>
-                    <button class="btn btn-warning btn-sm"> 
-                    <i class="fa fa-check" aria-hidden="true"></i>
+                    
+                
+                    <button class="btn btn-warning btn-sm" value="{{ project.id }}" name="btnValid"> 
+                        <i class="fa fa-check mr-0" aria-hidden="true"></i>
                     </button>
+                    
+                    
+                    {# {{ form_errors(form.valid) }} #}
+                    {# {{ form_label(form.valid) }} #}
+                    {# {{ form_widget(form.valid, { 'label': 'Click me' }) }} #}
+                
                 </td>
                 {% else %}
                 <td>{{ project.deliverDate|date("m/d/Y") }}</td>
@@ -40,7 +48,7 @@
                 </td>
                 {% endif %}
             </tr>
-        {% endfor %}
+        {{ form_end(form) }}{% endfor %} 
         </tbody>
     </table>
 </div>
