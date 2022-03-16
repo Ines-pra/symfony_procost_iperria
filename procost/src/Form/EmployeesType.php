@@ -42,7 +42,8 @@ class EmployeesType extends AbstractType
                 'label' => 'Coût journalier'
             ])
             ->add('createdAt', DateType::class, [
-                'label' => 'Date d\'embauche'
+                'label' => 'Date d\'embauche',
+                'widget' => 'single_text',
             ])     
         ;
     }
