@@ -109,9 +109,13 @@ class ProjectController extends AbstractController
             // return $this->redirectToRoute('/job');
         }
 
+        $project = $this->projectRepository->find($id);
+
         return $this->render('forms/formProject.html.twig',[
             'title' => "Projets",
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'action' => $action,
+            'project' => $project
         ]);
     }
 

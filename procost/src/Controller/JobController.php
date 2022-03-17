@@ -34,10 +34,10 @@ class JobController extends AbstractController
     }
 
     /** 
-     * @Route("/job_form/{id}",name="form_job",methods={"GET","POST"}, requirements={"id"="\d+"})
+     * @Route("/job_form/{id}/{action}",name="form_job",methods={"GET","POST"}, requirements={"id"="\d+"})
      */
 
-    public function add_employees(Request $request, int $id) : Response
+    public function add_employees(Request $request, int $id, string $action) : Response
     {
         $job = new Job;
         $form = $this->createForm(JobType::class, $job);
@@ -46,7 +46,7 @@ class JobController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            if ($id == 0){
+            if (($id == 0)&&($action='add')){
                 $job1 = new Job();
                 $job1->setName($_POST['job']['name']);
                 $this->em->persist($job1);
@@ -60,10 +60,13 @@ class JobController extends AbstractController
             // return $this->redirectToRoute('/job');
         }
 
+        $job = $this->jobRepository->find($id);
 
         return $this->render('forms/formJob.html.twig',[
             'title' => "Métiers",
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'action' => $action,
+            'job' => $job
         ]);
     }
 

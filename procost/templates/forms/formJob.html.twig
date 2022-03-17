@@ -30,6 +30,7 @@
                      <div class="form-group row">
                          {{ form_errors(form.name) }}
                          {{ form_label(form.name) }}
+                             <br> {% if action == 'update' %} Ancien nom : {{ job.name }} {% endif %}
                          {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': form.name.vars.label} }) }}
 
                      </div>

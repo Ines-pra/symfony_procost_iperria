@@ -30,11 +30,13 @@
                          <div class="form-group row">
                              {{ form_errors(form.name) }}
                              {{ form_label(form.name) }}
+                             <br> {% if action == 'update' %} Ancien nom : {{ project.name }} {% endif %}
                              {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': form.name.vars.label} }) }}
                          </div>
                          <div class="form-group row">
                              {{ form_errors(form.description) }}
                              {{ form_label(form.description) }}
+                             <br> {% if action == 'update' %} Ancien nom : {{ project.description }} {% endif %}
                              {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': form.description.vars.label} }) }}
                          </div>
                      </div>
@@ -48,6 +50,7 @@
                          <div class="form-group row">
                              {{ form_errors(form.salesPrice) }}
                              {{ form_label(form.salesPrice) }}
+                             <br> {% if action == 'update' %} Ancien nom : {{ project.salesPrice }} {% endif %}
                              {{ form_widget(form.salesPrice, {'attr': {'class': 'form-control', 'placeholder': form.salesPrice.vars.label} }) }}
                          </div>
                      </div>

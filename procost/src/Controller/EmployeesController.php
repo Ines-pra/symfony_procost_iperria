@@ -59,7 +59,6 @@ class EmployeesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            print_r($_POST);
             $timeProject = new TimeProject();
             $timeProject->setProject($this->projectRepository->find($_POST['time_project']['project']));
             $timeProject->setEmployee($employee);
@@ -92,7 +91,6 @@ class EmployeesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            $createdAt = $_POST['employees']['createdAt']['month'].'.'.$_POST['employees']['createdAt']['day'].'.'.$_POST['employees']['createdAt']['year'];
             if (($id == 0)&&($action == 'add')){
                 $employee1 = new Employees();
                 $employee1->setFirstName($_POST['employees']['firstName']);
@@ -100,10 +98,11 @@ class EmployeesController extends AbstractController
                 $employee1->setEmail($_POST['employees']['email']);
                 $employee1->setJob($this->jobRepository->find($_POST['employees']['job']));
                 $employee1->setDayCost($_POST['employees']['dayCost']);
-                $employee1->setCreatedAt(new DateTime($createdAt));
+                $employee1->setCreatedAt(new DateTime($_POST['createdAt']));
                 $this->em->persist($employee1);
                 $this->em->flush();
-                $this->addFlash('success', 'Votre ajout a été pris en compte');}
+                $this->addFlash('success', 'Votre ajout a été pris en compte');
+            }
             else {
                 $employee1 = $this->employeesRepository->find($id);
                 $employee1->setFirstName($_POST['employees']['firstName']);
@@ -111,16 +110,21 @@ class EmployeesController extends AbstractController
                 $employee1->setEmail($_POST['employees']['email']);
                 $employee1->setJob($this->jobRepository->find($_POST['employees']['job']));
                 $employee1->setDayCost($_POST['employees']['dayCost']);
-                $employee1->setCreatedAt(new DateTime($createdAt));
+                $employee1->setCreatedAt(new DateTime($_POST['createdAt']));
                 $this->em->flush();
-                $this->addFlash('success', 'Votre modification a été prise en compte');}
+                $this->addFlash('success', 'Votre modification a été prise en compte');
+            }
+
             // return $this->redirectToRoute('/job');
         }
+
+        $employee=$this->employeesRepository->find($id);
 
         return $this->render('forms/formEmployees.html.twig',[
             'title' => "Employés",
             'form' => $form->createView(),
-            'action' => $action
+            'action' => $action,
+            'employee' => $employee
         ]);
     }
    
