@@ -16,6 +16,7 @@ use App\Repository\JobRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\TimeProjectRepository;
 use DateTime;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EmployeesController extends AbstractController
@@ -34,9 +35,15 @@ class EmployeesController extends AbstractController
      * @Route("/employees",name="main_employees",methods={"GET"})
      */
 
-    public function employees() : Response
+    public function employees(Request $request, PaginatorInterface $paginator) : Response
     {
         $employees = $this->employeesRepository->findAll();
+
+        $employees = $paginator->paginate(
+            $employees,
+            $request->query->getInt('page',1),
+            10
+        );
 
         return $this->render('template/list.html.twig',[
             'title' => "Employés",
@@ -98,7 +105,7 @@ class EmployeesController extends AbstractController
                 $employee1->setEmail($_POST['employees']['email']);
                 $employee1->setJob($this->jobRepository->find($_POST['employees']['job']));
                 $employee1->setDayCost($_POST['employees']['dayCost']);
-                $employee1->setCreatedAt(new DateTime($_POST['createdAt']));
+                $employee1->setCreatedAt(new DateTime($_POST['employees']['createdAt']));
                 $this->em->persist($employee1);
                 $this->em->flush();
                 $this->addFlash('success', 'Votre ajout a été pris en compte');
@@ -110,7 +117,7 @@ class EmployeesController extends AbstractController
                 $employee1->setEmail($_POST['employees']['email']);
                 $employee1->setJob($this->jobRepository->find($_POST['employees']['job']));
                 $employee1->setDayCost($_POST['employees']['dayCost']);
-                $employee1->setCreatedAt(new DateTime($_POST['createdAt']));
+                $employee1->setCreatedAt(new DateTime($_POST['employees']['createdAt']));
                 $this->em->flush();
                 $this->addFlash('success', 'Votre modification a été prise en compte');
             }

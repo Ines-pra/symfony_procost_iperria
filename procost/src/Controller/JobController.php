@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 class JobController extends AbstractController
 {
@@ -23,9 +24,15 @@ class JobController extends AbstractController
      * @Route("/job",name="main_job",methods={"GET"})
      */
 
-    public function job() : Response
+    public function job(Request $request, PaginatorInterface $paginator) : Response
     {
         $jobs = $this->jobRepository->findAll();
+
+        $jobs = $paginator->paginate(
+            $jobs,
+            $request->query->getInt('page',1),
+            10
+        );
 
         return $this->render('template/list.html.twig',[
             'title' => "Métiers",

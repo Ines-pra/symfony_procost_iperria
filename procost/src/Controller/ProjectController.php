@@ -14,6 +14,7 @@ use App\Form\ValidProjectType;
 use App\Repository\ProjectRepository;
 use App\Repository\TimeProjectRepository;
 use DateTime;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ProjectController extends AbstractController
 {
@@ -28,9 +29,16 @@ class ProjectController extends AbstractController
      * @Route("/project",name="main_project",methods={"GET","POST"})
      */
 
-    public function project(Request $request) : Response
+    public function project(Request $request, PaginatorInterface $paginator) : Response
     {
         $projects = $this->projectRepository->findAll();
+
+        $projects = $paginator->paginate(
+            $projects,
+            $request->query->getInt('page',1),
+            10
+        );
+
 
         $project = new Project;
         $form = $this->createForm(ValidProjectType::class, $project);
