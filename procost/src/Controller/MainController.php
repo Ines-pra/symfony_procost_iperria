@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\TimeProject;
 use App\Repository\EmployeesRepository;
 use App\Repository\JobRepository;
 use App\Repository\ProjectRepository;
@@ -74,12 +75,14 @@ class MainController extends AbstractController
 
 
         //les 5 derniers projets + utilisation du tableau de tous les salaires
+        $costProjects = $totalCostProject;
         $lastProjects = $this->projectRepository->lastProject();
         foreach ($projects as $project)
         {
+            if (empty($costProjects[$project->getId()]))
             {
-                print_r('Projet '.$project->getId().' non recencés');
-                $totalCostProject[$project->getId()] = "Aucune dépense recencée";
+                // print_r('Projet '.$project->getId().' non recencés');
+                $costProjects[$project->getId()] = "Aucune dépense recencée";
             }
         }
 
@@ -92,7 +95,7 @@ class MainController extends AbstractController
             (!empty($this->projectRepository->find(array_search($totalCP,$totalCostProject))->getDeliverDate()))) $totalNoRateProject++ ;            
         }
 
-        //taux de livraison : utilisation de la liste de tous les projets et de la liste de tous les projets finis
+        //taux de livraison : utilisation de la liste de tous les projets et de la liste de tous les projets finis        
 
         return $this->render('template/index.html.twig',[
             'title' => "Homepage",
@@ -106,7 +109,7 @@ class MainController extends AbstractController
             'maxEmployeePay' => $maxEmployeePay,
             'topEmployee' => $topEmployee,
             'totalNoRateProject' => $totalNoRateProject,
-            'totalCostProject' => $totalCostProject,
+            'totalCostProject' => $costProjects,
         ]);
     }
 

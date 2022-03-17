@@ -5,74 +5,94 @@ namespace App\DataFixtures;
 use App\Entity\Employees;
 use App\Entity\Project;
 use App\Entity\Job;
+use App\Entity\TimeProject;
+use App\Repository\EmployeesRepository;
+use App\Repository\ProjectRepository;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private ProjectRepository $projectRepository,
+        private EmployeesRepository $employeesRepository)
+    {
+    }   
 
     private const DATA_PROJECT = [
         [
-            'name' => 'Project 1',
-            'description' => 'Description 1'
+            'name' => 'Procost',
+            'description' => 'Projet symfony',
         ],
         [
-            'name' => 'Project 2',
-            'description' => 'Description 2'
+            'name' => 'Shoefony',
+            'description' => 'Projet symphony',
         ],
         [
-            'name' => 'Project 3',
-            'description' => 'Description 3'
+            'name' => 'MindRace',
+            'description' => 'Projet PHP et JS',
         ],
         [
-            'name' => 'Project 4',
-            'description' => 'Description 4'
+            'name' => 'Pokédex',
+            'description' => 'Projet JS',
         ],
         [
-            'name' => 'Project 5',
-            'description' => 'Description 5'
+            'name' => 'Netflix',
+            'description' => 'Projet React',
+        ],
+        [
+            'name' => 'Cicero',
+            'description' => 'Projet tutoré',
         ],
     ];
 
     private const DATA_EMPLOYEES = [
         [
-            'name' => 'User1',
-            'firstname' => 'userr',
-            'email' => 'user1@gmail.com',
-            'job' => 'JOB',
-            'dayCost' => 600,
-            // 'dateJob' => new \DateTime("2022-01-02 00:00:00")
+            'name' => 'Perria',
+            'firstname' => 'Inès',
+            'email' => 'perria.ines@gmail.com',
         ],
         [
-            'name' => 'User2',
-            'firstname' => 'usser',
-            'email' => 'user2@gmail.com',
-            'job' => 'JOB',
-            'dayCost' => 200,
-            // 'dateJob' => new \DateTime("2020-02-02 00:00:00")
+            'name' => 'Martin',
+            'firstname' => 'Florian',
+            'email' => 'martin.florian@gmail.com',
         ],
         [
-            'name' => 'User3',
-            'firstname' => 'uuser',
-            'email' => 'user3@gmail.com',
-            'job' => 'JOB',
-            'dayCost' => 350,
-            // 'dateJob' => new \DateTime("2018-05-03 00:00:00")
+            'name' => 'Chalopin',
+            'firstname' => 'Alexy',
+            'email' => 'chalopin.alexy@gmail.com',
         ],
         [
-            'name' => 'User4',
-            'firstname' => 'useer',
-            'email' => 'user4@gmail.com',
-            'job' => 'JOB',
-            'dayCost' => 735,
-            // 'dateJob' => new \DateTime("2015-04-18 s00:00:00")
+            'name' => 'Schmitt',
+            'firstname' => 'Alexandre',
+            'email' => 'schmitt.alexandre@gmail.com',
+        ],
+        [
+            'name' => 'Cazzoli',
+            'firstname' => 'Valentin',
+            'email' => 'cazzoli.valentin@gmail.com',
+        ],
+        [
+            'name' => 'Humbert',
+            'firstname' => 'Guillaume',
+            'email' => 'humbert.guilaume@gmail.com',
         ]
     ];
 
     private const DATA_JOB = [
-        ['SEO'],
-        ['Developpeur'],
-        ['Analyste']
+        ['Développeur/euse informatique'],
+        ['Développeur/euse multimédia'],
+        ['Chef/fe de projet web'],
+        ['WebMaster'],
+        ['Web Designer'],
+        ['Traffic Manager'],
+        ['Hot Liner'],
+        ['Community Manager'],
+        ['Administrateur/trice de bases de données'],
+        ['Analyste SOC'],
+        ['Consultant/e en cyber-sécurité'],
+        ['Data Scientist']
     ];
 
     public function load(ObjectManager $manager): void
@@ -80,11 +100,9 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
 
         $this->loadJob();
-        $this->loadEmployees();
-        $this->loadProject();
-        // $product = new Product();
-        // $manager->persist($product);
+        $manager->flush();
 
+        $this->loadData();
         $manager->flush();
     }
 
@@ -97,45 +115,44 @@ class AppFixtures extends Fixture
             $this->manager->persist($job);
             $this->addReference(Job::class . $key, $job);
         }
-        // for($i=0; $i <=2; $i++)
-        // {
-        //     $job = new Job();
-        //     $job->setName(self::DATA_JOB[$i]);
-            
-        //     $this->manager->persist($job);
-        // }
-        
     }
 
-    private function loadEmployees(): void
+
+    private function loadData():void
     {
-        for($i=0; $i <=3; $i++)
+        $date[0]=NULL;
+        $date[1]= new DateTime(date('d-m-y h:i:s'));
+        for ($i=0 ; $i < count(self::DATA_EMPLOYEES) ; $i++ )
         {
-            $date = new \DateTime();
+            $id = rand(0,1);
+
+            $project = new Project();
+            $project->setName(self::DATA_PROJECT[$i]['name']);
+            $project->setDescription(self::DATA_PROJECT[$i]['description']);
+            $project->setSalesPrice(random_int(1500,20000));
+            $project->setDeliverDate($date[$id]);
+            
             $employees = new Employees();
             $employees->setLastName(self::DATA_EMPLOYEES[$i]['name']);
             $employees->setFirstName(self::DATA_EMPLOYEES[$i]['firstname']);
             $employees->setJob($this->getRandomEntityReference(Job::class, self::DATA_JOB));
             $employees->setEmail(self::DATA_EMPLOYEES[$i]['email']);
-            $employees->setDayCost(self::DATA_EMPLOYEES[$i]['dayCost']);
-            $employees->setCreatedAt($date);
+            $employees->setDayCost(random_int(200,4000));
+            $employees->setCreatedAt(new \DateTime(date('d-m-y h:i:s')));
+
+            $timeProject = new TimeProject();
+            $timeProject->setEmployee($employees);
+            $timeProject->setProject($project);
+            $timeProject->setDay(random_int(1,7));
+            $timeProject->setCreatedAt(new \DateTime(date('d-m-y h:i:s')));
+            
             
             $this->manager->persist($employees);
-        }
-    }
-
-    private function loadProject():void
-    {
-        for($i=0; $i < count(self::DATA_PROJECT); $i++)
-        {
-            $project = new Project();
-            $project->setName(self::DATA_PROJECT[$i]['name']);
-            $project->setDescription(self::DATA_PROJECT[$i]['description']);
-            $project->setSalesPrice(random_int(1500,5000));
-            $project->setDeliverDate(NULL);
-            
             $this->manager->persist($project);
-        }
+            $this->manager->persist($timeProject);
+
+            sleep(1);
+        }  
     }
 
     /**
