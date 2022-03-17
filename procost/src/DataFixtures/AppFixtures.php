@@ -14,11 +14,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    public function __construct(
-        private ProjectRepository $projectRepository,
-        private EmployeesRepository $employeesRepository)
-    {
-    }   
 
     private const DATA_PROJECT = [
         [
@@ -108,7 +103,6 @@ class AppFixtures extends Fixture
 
     private function loadJob():void 
     {
-
         foreach (self::DATA_JOB as $key => [$name]) {
             $job = new Job();
             $job->setName($name);
