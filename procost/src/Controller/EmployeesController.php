@@ -57,6 +57,9 @@ class EmployeesController extends AbstractController
 
     public function details_employees(Request $request, int $id) : Response
     {
+        if (!($this->employeesRepository->find($id))){
+            return $this->redirectToRoute('main_notfound');
+        }
         $employee = $this->employeesRepository->findOneBySomeField($id);
 
         $employees = new TimeProject;
@@ -74,7 +77,6 @@ class EmployeesController extends AbstractController
             $this->em->flush();
         }
 
-        
         $timeProjects = $this->timeProjectRepository->findByEmployee($id);
 
         return $this->render('details/detailEmployees.html.twig',[
@@ -91,6 +93,9 @@ class EmployeesController extends AbstractController
 
     public function add_employees(Request $request, int $id, string $action) : Response
     {
+        if (!($this->employeesRepository->find($id))){
+            return $this->redirectToRoute('main_notfound');
+        }
         $employees = new Employees;
         $form = $this->createForm(EmployeesType::class, $employees);
 

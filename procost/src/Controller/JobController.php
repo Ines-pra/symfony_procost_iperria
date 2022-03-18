@@ -46,6 +46,9 @@ class JobController extends AbstractController
 
     public function add_employees(Request $request, int $id, string $action) : Response
     {
+        if (!($this->jobRepository->find($id))){
+            return $this->redirectToRoute('main_notfound');
+        }
         $job = new Job;
         $form = $this->createForm(JobType::class, $job);
 

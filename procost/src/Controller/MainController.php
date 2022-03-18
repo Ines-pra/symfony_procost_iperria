@@ -112,5 +112,15 @@ class MainController extends AbstractController
             'totalCostProject' => $costProjects,
         ]);
     }
+    
+    /** 
+     * @Route("/notFound",name="main_notfound",methods={"GET"})
+     */
+    public function notFound(): Response
+    {
+        return $this->render('error404.html.twig', [
+            'title' => 'Erreur'
+        ]);
+    }
 
 }

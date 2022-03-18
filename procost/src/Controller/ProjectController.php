@@ -66,6 +66,10 @@ class ProjectController extends AbstractController
 
     public function details_project(int $id) : Response
     {
+        if (!($this->projectRepository->find($id))){
+            return $this->redirectToRoute('main_notfound');
+        }
+
         $project = $this->projectRepository->find($id);
         $totalEmployee = $this->timeProjectRepository->findTotalEmployeeByProject($id);
         $employee = $this->timeProjectRepository->findAllProjectById($id);
@@ -92,6 +96,9 @@ class ProjectController extends AbstractController
 
     public function add_project(Request $request, int $id, string $action) : Response
     {
+        if (!($this->projectRepository->find($id))){
+            return $this->redirectToRoute('main_notfound');
+        } 
         $project = new Project;
         $form = $this->createForm(ProjectType::class, $project);
 
