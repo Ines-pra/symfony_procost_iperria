@@ -81,7 +81,6 @@ class MainController extends AbstractController
         {
             if (empty($costProjects[$project->getId()]))
             {
-                // print_r('Projet '.$project->getId().' non recencés');
                 $costProjects[$project->getId()] = "Aucune dépense recencée";
             }
         }

@@ -136,23 +136,6 @@
                             </th>
                         </tr>
                         {% endfor %}
-                        {# {% for lastProject in lastProjects %}
-                            <tr>
-                                <th>
-                                    <a href="#">{{ lastProject.project.name }}</a>
-                                </th>
-                                <th>{{ lastProject.project.createdAt|date("m/d/Y") }}</th>
-                                <th>{{ lastProject.project.salesPrice }} €</th>
-                                <th> </th>
-                                <th>
-                                    {% if lastProject.project.deliverDate != '' %}
-                                    <span class="badge badge-success">OUI</span>
-                                    {% else %}
-                                    <span class="badge badge-danger">NON</span>
-                                    {% endif %}
-                                </th>
-                            </tr>
-                        {% endfor %} #}
                     </tbody>
                 </table>
             </div>
